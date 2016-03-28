@@ -9,10 +9,10 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import java.util.List;
 
 @Controller
-public class AppController {
+public class TimelineController {
 
     // TODO use
-    private static final int SEARCH_LIMIT = 30;
+    private static final int REQUEST_ITEM_LIMIT = 30;
 
     @Autowired
     TimelineItemRepository timelineItemRepository;
@@ -37,26 +37,46 @@ public class AppController {
         return "timeline";
     }
 
-
     /**
      * Get timeline items.
      *
-     * @param lastId last item id
-     * @return if exist last item id getting later items, else getting all items
+     * <p>
+     *     Get all items if there is no lastId, otherwise get the items that has greater id than lastId.
+     * </p>
+     *
+     * @param lastItemId last item id
+     * @return timeline items
      */
-    @RequestMapping("/items/{lastId}")
+    @RequestMapping("/timeline/items")
     @ResponseBody
-    Items items(@PathVariable Long lastId) {
+    Items items(@PathVariable Long lastItemId) {
         // TODO get session
         String userId = "Tom";
 
-        List<TimelineItem> items = timelineItemRepository.find(lastId, userId);
+        List<TimelineItem> items = timelineItemRepository.find(lastItemId, userId);
         return new Items(items);
     }
 
+    /**
+     * Register Server-sent events notification.
+     *
+     * @return
+     */
+    @RequestMapping("/timeline/registNotification")
+    SseEmitter registerNotification() {
+        SseEmitter sse = new SseEmitter();
+
+        // TODO
+
+        return sse;
+    }
 
     /**
      * Append user data.
+     *
+     * <p>
+     *     This url is not authorization.
+     * </p>
      *
      * @param userId
      * @param accessToken
@@ -65,7 +85,7 @@ public class AppController {
     @RequestMapping(value = "/hooks/{userId}", method = RequestMethod.GET)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     void post(@PathVariable String userId, String accessToken, String json) {
-        // check access token
+        // check user id and access token
 
         // create store data
         TimelineItem item = TimelineItem.builder()
@@ -80,18 +100,4 @@ public class AppController {
         // subscribe store event
     }
 
-
-    /**
-     * Register Server-sent events notification.
-     *
-     * @return
-     */
-    @RequestMapping("registNotification")
-    SseEmitter registerNotification() {
-        SseEmitter sse = new SseEmitter();
-
-        // TODO
-
-        return sse;
-    }
 }
