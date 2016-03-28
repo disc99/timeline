@@ -1,7 +1,7 @@
 CREATE TABLE TIMELINE_ITEMS (
-    id serial primary key,
-    user_id varchar(50) not null,
-    service_id varchar(50) not null,
-    json text not null,
-    created_time timestamp not null default current_timestamp
+    ID SERIAL PRIMARY KEY,
+    USER_ID VARCHAR(50) NOT NULL,
+    SERVICE_ID VARCHAR(50) NOT NULL,
+    CONTENTS TEXT NOT NULL,
+    CREATED_TIME TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 )

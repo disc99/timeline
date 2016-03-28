@@ -49,11 +49,13 @@ public class TimelineController {
      */
     @RequestMapping("/timeline/items")
     @ResponseBody
-    Items items(@PathVariable Long lastItemId) {
+    Items items(@RequestParam(required = false) Long lastItemId) {
         // TODO get session
         String userId = "Tom";
 
-        List<TimelineItem> items = timelineItemRepository.find(lastItemId, userId);
+        List<TimelineItem> items = lastItemId == null
+            ? timelineItemRepository.findAll(userId)
+            : timelineItemRepository.find(lastItemId, userId);
         return new Items(items);
     }
 
@@ -80,18 +82,18 @@ public class TimelineController {
      *
      * @param userId
      * @param accessToken
-     * @param json
+     * @param itemRequest
      */
-    @RequestMapping(value = "/hooks/{userId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/hooks/{userId}", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    void post(@PathVariable String userId, String accessToken, String json) {
+    void post(@PathVariable String userId, String accessToken, @RequestBody ItemRequest itemRequest) {
         // check user id and access token
 
         // create store data
         TimelineItem item = TimelineItem.builder()
                 .userId(userId)
-                .serviceId(userId)
-                .json(json)
+                .serviceId(itemRequest.getServiceId())
+                .contents(itemRequest.getContents())
                 .build();
 
         // store

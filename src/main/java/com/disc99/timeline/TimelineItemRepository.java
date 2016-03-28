@@ -21,11 +21,17 @@ public class TimelineItemRepository {
         SqlParameterSource param = new MapSqlParameterSource()
                 .addValue("lastId", lastId)
                 .addValue("userId", userId);
-        return jdbcTemplate.query("SELECT * FROM TIMELINE_ITEMS WHERE ID > :lastId AND USER_ID = :userId", param, new BeanPropertyRowMapper<>());
+        return jdbcTemplate.query("SELECT * FROM TIMELINE_ITEMS WHERE ID > :lastId AND USER_ID = :userId", param, new BeanPropertyRowMapper<>(TimelineItem.class));
     }
 
-    public void save(@NonNull TimelineItem item) {
+    List<TimelineItem> findAll(@NonNull String userId) {
+        SqlParameterSource param = new MapSqlParameterSource()
+                .addValue("userId", userId);
+        return jdbcTemplate.query("SELECT * FROM TIMELINE_ITEMS WHERE USER_ID = :userId", param, new BeanPropertyRowMapper<>(TimelineItem.class));
+    }
+
+    void save(@NonNull TimelineItem item) {
         SqlParameterSource param = new BeanPropertySqlParameterSource(item);
-        jdbcTemplate.update("INSERT INTO TIMELINE_ITEMS (USER_ID, SERVICE_ID, JSON) VALUES(:userId, :serviceId, :json)", param);
+        jdbcTemplate.update("INSERT INTO TIMELINE_ITEMS (USER_ID, SERVICE_ID, CONTENTS) VALUES(:userId, :serviceId, :contents)", param);
     }
 }
