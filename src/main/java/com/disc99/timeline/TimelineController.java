@@ -86,7 +86,7 @@ public class TimelineController {
      */
     @RequestMapping(value = "/hooks/{userId}", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    void post(@PathVariable String userId, String accessToken, @RequestBody ItemRequest itemRequest) {
+    void post(@PathVariable String userId, String accessToken, @ModelAttribute ItemRequest itemRequest) {
         // check user id and access token
 
         // create store data
