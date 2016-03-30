@@ -2,11 +2,16 @@ package com.disc99.timeline;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class TimelineController {
@@ -16,6 +21,8 @@ public class TimelineController {
 
     @Autowired
     TimelineItemRepository timelineItemRepository;
+
+    Map<String, SseEmitter> emitters = new HashMap<>();
 
     /**
      * Top page.
@@ -66,11 +73,14 @@ public class TimelineController {
      */
     @RequestMapping("/timeline/registNotification")
     SseEmitter registerNotification() {
-        SseEmitter sse = new SseEmitter();
+        // TODO get session
+        String userId = "Tom";
 
-        // TODO
+        SseEmitter emitter = new SseEmitter();
+        emitters.put(userId, emitter);
+        emitter.onCompletion(() -> emitters.remove(userId));
 
-        return sse;
+        return emitter;
     }
 
     /**
@@ -100,6 +110,14 @@ public class TimelineController {
         timelineItemRepository.save(item);
 
         // subscribe store event
+        SseEmitter emitter = emitters.get(userId);
+        try {
+            emitter.send("update", MediaType.APPLICATION_JSON);
+        } catch (IOException e) {
+            emitter.complete();
+            emitters.remove(userId);
+            e.printStackTrace();
+        }
     }
 
 }
