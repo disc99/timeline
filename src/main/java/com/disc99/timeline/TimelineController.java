@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -78,7 +79,11 @@ public class TimelineController {
 
         SseEmitter emitter = new SseEmitter();
         emitters.put(userId, emitter);
-        emitter.onCompletion(() -> emitters.remove(userId));
+        emitter.onCompletion(() -> {
+            System.out.println(LocalDateTime.now() + " onCompletion");
+            emitters.remove(userId);
+        });
+        emitter.onTimeout(() -> System.out.println(LocalDateTime.now() + " onCompletion"));
 
         return emitter;
     }

@@ -3,24 +3,10 @@
 <head>
     <meta charset="UTF-8" />
     <title>Title</title>
+    <script src="/js/tl.js"></script>
 </head>
 <body>
     <h3>Timeline</h3>
 
-    <script>
-        var source = new EventSource("/timeline/registNotification");
-        source.addEventListener('open', function (e) {
-            console.log('connected');
-        });
-        source.addEventListener('message', function (e) {
-            console.log(e.data);
-        }, false);
-        source.addEventListener('error', function (e) {
-            if (e.readyState == EventSource.CLOSED) {
-                connected = false;
-                connect();
-            }
-        }, false);
-    </script>
 </body>
 </html>
