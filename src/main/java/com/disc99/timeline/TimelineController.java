@@ -26,17 +26,7 @@ public class TimelineController {
     Map<String, SseEmitter> emitters = new HashMap<>();
 
     /**
-     * Top page.
-     *
-     * @return
-     */
-    @RequestMapping("/")
-    String index() {
-        return "index";
-    }
-
-    /**
-     * Timeline page.
+     * Timeline page.   
      *
      * @return
      */
