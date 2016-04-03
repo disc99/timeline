@@ -25,6 +25,8 @@ public class TimelineController {
 
     Map<String, SseEmitter> emitters = new HashMap<>();
 
+
+
     /**
      * Timeline page.
      *
