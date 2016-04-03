@@ -16,6 +16,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
+
 @Controller
 public class TimelineController {
 
@@ -92,7 +95,7 @@ public class TimelineController {
      * @param accessToken
      * @param itemRequest
      */
-    @RequestMapping(value = "/hooks/{userName}", method = RequestMethod.POST)
+    @RequestMapping(value = "/hooks/{userName}", method = POST)
     @ResponseStatus(value = HttpStatus.CREATED)
     void post(@PathVariable String userName, String accessToken, @ModelAttribute ItemRequest itemRequest) {
         // TODO check user id and access token
@@ -108,12 +111,14 @@ public class TimelineController {
         timelineItemRepository.save(item);
 
         SseEmitter emitter = emitters.get(account.getId());
-        try {
-            emitter.send("update", MediaType.APPLICATION_JSON);
-        } catch (IOException e) {
-            emitter.complete();
-            emitters.remove(account.getId());
-            e.printStackTrace();
+        if (emitter != null) {
+            try {
+                emitter.send("update", MediaType.APPLICATION_JSON);
+            } catch (IOException e) {
+                emitter.complete();
+                emitters.remove(account.getId());
+                e.printStackTrace();
+            }
         }
     }
 

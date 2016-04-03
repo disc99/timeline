@@ -18,7 +18,7 @@ public class UserController {
     AccountRepository accountRepository;
 
     @RequestMapping(value = "/register", method = POST)
-    public String regist(@Valid @ModelAttribute RegisterRequest request, BindingResult bindingResult) {
+    public String register(@Valid @ModelAttribute RegisterRequest request, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "/signup";
         }
