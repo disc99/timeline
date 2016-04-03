@@ -1,13 +1,12 @@
 package com.disc99.timeline;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Builder;
+import lombok.Value;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+@Value
+@Builder
 public class Account {
-    private String name;
-    private String password;
+    AccountId id;
+    String name;
+    String password;
 }

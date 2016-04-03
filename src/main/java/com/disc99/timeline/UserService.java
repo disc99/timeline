@@ -10,15 +10,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserService implements UserDetailsService {
     @Autowired
-    AccountRepository userRepository;
+    AccountRepository accountRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        try {
-            Account account = userRepository.findByName(username);
-            return new User(account);
-        } catch (DataAccessException e) {
-            throw new UsernameNotFoundException(String.format("The given name is not found. name=%s", username), e);
-        }
+        return accountRepository.findByName(username)
+                .map(User::new)
+                .orElseThrow(() -> new UsernameNotFoundException(String.format("The given name is not found. name=%s", username)));
     }
 }

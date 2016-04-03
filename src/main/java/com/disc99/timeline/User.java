@@ -13,4 +13,8 @@ public class User extends org.springframework.security.core.userdetails.User {
         super(account.getName(), account.getPassword(), AuthorityUtils.createAuthorityList(Role.USER));
         this.account = account;
     }
+
+    public AccountId accountId() {
+        return account.getId();
+    }
 }

@@ -3,11 +3,13 @@ package com.disc99.timeline;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,11 +23,11 @@ public class TimelineController {
     private static final int REQUEST_ITEM_LIMIT = 30;
 
     @Autowired
+    AccountRepository accountRepository;
+    @Autowired
     TimelineItemRepository timelineItemRepository;
 
-    Map<String, SseEmitter> emitters = new HashMap<>();
-
-
+    Map<AccountId, SseEmitter> emitters = new HashMap<>();
 
     /**
      * Timeline page.
@@ -49,13 +51,13 @@ public class TimelineController {
      */
     @RequestMapping("/timeline/items")
     @ResponseBody
-    Items items(@RequestParam(required = false) Long lastItemId) {
-        // TODO get session
-        String userId = "Tom";
+    Items items(@RequestParam(required = false) Long lastItemId, Principal principal) {
+        User user = (User) ((Authentication) principal).getPrincipal();
 
         List<TimelineItem> items = lastItemId == null
-            ? timelineItemRepository.findAll(userId)
-            : timelineItemRepository.find(lastItemId, userId);
+            ? timelineItemRepository.findAll(user.accountId())
+            : timelineItemRepository.find(lastItemId, user.accountId());
+
         return new Items(items);
     }
 
@@ -65,15 +67,14 @@ public class TimelineController {
      * @return
      */
     @RequestMapping("/timeline/registNotification")
-    SseEmitter registerNotification() {
-        // TODO get session
-        String userId = "Tom";
+    SseEmitter registerNotification(Principal principal) {
+        User user = (User) ((Authentication) principal).getPrincipal();
 
         SseEmitter emitter = new SseEmitter();
-        emitters.put(userId, emitter);
+        emitters.put(user.accountId(), emitter);
         emitter.onCompletion(() -> {
             System.out.println(LocalDateTime.now() + " onCompletion");
-            emitters.remove(userId);
+            emitters.remove(user.accountId());
         });
         emitter.onTimeout(() -> System.out.println(LocalDateTime.now() + " onCompletion"));
 
@@ -87,32 +88,31 @@ public class TimelineController {
      *     This url is not authorization.
      * </p>
      *
-     * @param userId
+     * @param userName
      * @param accessToken
      * @param itemRequest
      */
-    @RequestMapping(value = "/hooks/{userId}", method = RequestMethod.POST)
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    void post(@PathVariable String userId, String accessToken, @ModelAttribute ItemRequest itemRequest) {
-        // check user id and access token
+    @RequestMapping(value = "/hooks/{userName}", method = RequestMethod.POST)
+    @ResponseStatus(value = HttpStatus.CREATED)
+    void post(@PathVariable String userName, String accessToken, @ModelAttribute ItemRequest itemRequest) {
+        // TODO check user id and access token
+        Account account = accountRepository.findByName(userName).get();
 
         // create store data
         TimelineItem item = TimelineItem.builder()
-                .userId(userId)
+                .accountId(account.getId().getValue())
                 .serviceId(itemRequest.getServiceId())
                 .contents(itemRequest.getContents())
                 .build();
 
-        // store
         timelineItemRepository.save(item);
 
-        // subscribe store event
-        SseEmitter emitter = emitters.get(userId);
+        SseEmitter emitter = emitters.get(account.getId());
         try {
             emitter.send("update", MediaType.APPLICATION_JSON);
         } catch (IOException e) {
             emitter.complete();
-            emitters.remove(userId);
+            emitters.remove(account.getId());
             e.printStackTrace();
         }
     }

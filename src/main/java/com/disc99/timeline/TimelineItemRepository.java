@@ -17,21 +17,21 @@ public class TimelineItemRepository {
     @Autowired
     NamedParameterJdbcTemplate jdbcTemplate;
 
-    List<TimelineItem> find(long lastId, @NonNull String userId) {
+    List<TimelineItem> find(long lastId, @NonNull AccountId accountId) {
         SqlParameterSource param = new MapSqlParameterSource()
                 .addValue("lastId", lastId)
-                .addValue("userId", userId);
-        return jdbcTemplate.query("SELECT * FROM TIMELINE_ITEMS WHERE ID > :lastId AND USER_ID = :userId", param, new BeanPropertyRowMapper<>(TimelineItem.class));
+                .addValue("accountId", accountId.getValue());
+        return jdbcTemplate.query("SELECT * FROM TIMELINE_ITEMS WHERE ID > :lastId AND ACCOUNT_ID = :accountId", param, new BeanPropertyRowMapper<>(TimelineItem.class));
     }
 
-    List<TimelineItem> findAll(@NonNull String userId) {
+    List<TimelineItem> findAll(@NonNull AccountId accountId) {
         SqlParameterSource param = new MapSqlParameterSource()
-                .addValue("userId", userId);
-        return jdbcTemplate.query("SELECT * FROM TIMELINE_ITEMS WHERE USER_ID = :userId", param, new BeanPropertyRowMapper<>(TimelineItem.class));
+                .addValue("accountId", accountId.getValue());
+        return jdbcTemplate.query("SELECT * FROM TIMELINE_ITEMS WHERE ACCOUNT_ID = :accountId", param, new BeanPropertyRowMapper<>(TimelineItem.class));
     }
 
     void save(@NonNull TimelineItem item) {
         SqlParameterSource param = new BeanPropertySqlParameterSource(item);
-        jdbcTemplate.update("INSERT INTO TIMELINE_ITEMS (USER_ID, SERVICE_ID, CONTENTS) VALUES(:userId, :serviceId, :contents)", param);
+        jdbcTemplate.update("INSERT INTO TIMELINE_ITEMS (ACCOUNT_ID, SERVICE_ID, CONTENTS) VALUES(:accountId, :serviceId, :contents)", param);
     }
 }

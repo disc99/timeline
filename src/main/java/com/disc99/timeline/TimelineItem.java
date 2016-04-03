@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class TimelineItem {
     private long id;
-    private String userId;
+    private Long accountId;
     private String serviceId;
     private String contents;
 }
