@@ -34,6 +34,9 @@ public class UserController {
         return "redirect:/timeline";
     }
 
+
+
+    // DEBUG LOGIC -------------------------------------------------------------------------------------
     @Autowired
     JdbcTemplate jdbcTemplate;
 

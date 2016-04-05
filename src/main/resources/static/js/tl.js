@@ -1,4 +1,5 @@
 var source = creteEventSource();
+
 document.addEventListener("visibilitychange", function() {
     if (!document.hidden && source.readyState == EventSource.CLOSED) {
         console.log("reconnect");
@@ -13,6 +14,7 @@ function creteEventSource() {
     });
     source.addEventListener('message', function (e) {
         console.log(e.data);
+        fetchItems();
     }, false);
     source.addEventListener('error', function (e) {
         if (e.readyState == EventSource.CLOSED) {
@@ -21,4 +23,18 @@ function creteEventSource() {
         }
     }, false);
     return source;
+}
+
+function fetchItems() {
+    fetch("/timeline/items", {
+      method: "get"
+    }).then(function (response) {
+      if (response.status === 200) {
+        console.log(response.statusText);
+      } else {
+        console.log(response.statusText);
+      }
+    }).catch(function (response) {
+      console.log(response);
+    });
 }
