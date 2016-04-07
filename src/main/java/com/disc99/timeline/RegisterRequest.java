@@ -7,11 +7,11 @@ import javax.validation.constraints.Size;
 
 @Data
 public class RegisterRequest {
-    @Size(min = 4)
+    @UserName
     private String username;
-    @Size(min = 8)
+    @Password
     private String password;
-    @Size(min = 8)
+    @Password
     private String passwordConfirmation;
 
     @AssertTrue
