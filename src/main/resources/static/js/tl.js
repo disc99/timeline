@@ -44,15 +44,13 @@ function creteEventSource() {
 
 function fetchItems() {
     fetch("/timeline/items", {
-      method: "get"
-    }).then(function (response) {
-      if (response.status === 200) {
-        console.log(response.statusText);
-      } else {
-        console.log(response.statusText);
-      }
-    }).catch(function (response) {
-      console.log(response);
+        credentials: 'include'
+    })
+    .then(res => res.json())
+    .then(json => {
+        console.log(json);
+
     });
+
 }
 
