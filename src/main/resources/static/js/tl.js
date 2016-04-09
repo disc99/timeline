@@ -1,4 +1,21 @@
-var source = creteEventSource();
+class ItemStore {
+    constructor() {
+        this._items = [];
+    }
+
+    store(items) {
+        this._items = this._items.concat(items);
+    }
+
+    get items() {
+        return this._items;
+    }
+}
+
+
+let source = creteEventSource();
+let itemStore = new ItemStore();
+
 
 document.addEventListener("visibilitychange", function() {
     if (!document.hidden && source.readyState == EventSource.CLOSED) {
@@ -38,3 +55,4 @@ function fetchItems() {
       console.log(response);
     });
 }
+
