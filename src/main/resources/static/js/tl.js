@@ -43,13 +43,14 @@ function creteEventSource() {
 }
 
 function fetchItems() {
-    fetch("/timeline/items", {
+    let lastId = itemStore.items.map(i => i.id).sort().reverse()[0] || "";
+    fetch("/timeline/items?lastItemId=" + lastId, {
         credentials: 'include'
     })
     .then(res => res.json())
     .then(json => {
         console.log(json);
-
+        itemStore.store(json.items);
     });
 
 }
