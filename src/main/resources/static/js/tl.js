@@ -18,12 +18,6 @@ class ItemStore {
     }
 }
 
-
-let source = creteEventSource();
-let itemStore = new ItemStore();
-itemStore.onChange(render);
-
-
 document.addEventListener("visibilitychange", function() {
     if (!document.hidden && source.readyState == EventSource.CLOSED) {
         console.log("reconnect");
@@ -69,4 +63,10 @@ function render(items) {
         ul.insertBefore(li, ul.firstChild);
     });
 }
+
+
+
+let source = creteEventSource();
+let itemStore = new ItemStore();
+itemStore.onChange(render);
 
