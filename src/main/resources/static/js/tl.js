@@ -66,7 +66,7 @@ function render(items) {
     items.forEach(i => {
         const li = document.createElement("li");
         li.appendChild(document.createTextNode(JSON.stringify(i)));
-        ul.appendChild(li);
+        ul.insertBefore(li, ul.firstChild);
     });
 }
 
