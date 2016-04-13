@@ -43,15 +43,12 @@ public class UserController {
     @RequestMapping(value = "/debug/users")
     @ResponseBody
     public List<Account> a() {
-        return jdbcTemplate.query("select id, name, password from accounts", new RowMapper<Account>() {
-            @Override
-            public Account mapRow(ResultSet rs, int rowNum) throws SQLException {
-                return Account.builder()
-                        .id(new AccountId(rs.getLong("id")))
-                        .name("name")
-                        .password("password")
-                        .build();
-            }
+        return jdbcTemplate.query("select id, name, password from accounts", (rs, rowNum) -> {
+            return Account.builder()
+                    .id(new AccountId(rs.getLong("id")))
+                    .name("name")
+                    .password("password")
+                    .build();
         });
     }
 }
