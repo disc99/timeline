@@ -54,6 +54,64 @@ class ItemStore {
     }
 }
 
+
+//const DB_NAME = "timeline";
+//const DB_VERSION = 1;
+//const DB_STORE_NAME = 'items';
+//
+//class ItemStore {
+//
+//    constructor() {
+//      let idbReq = indexedDB.open(DB_NAME, DB_VERSION);
+//
+//      idbReq.onupgradeneeded = event => {
+//        console.log("[ItemStore] onupgradeneeded");
+//        db = event.target.result;
+//        db.createObjectStore(DB_STORE_NAME, {keyPath: "id"});
+//      }
+//
+//      idbReq.onerror = event => console.log("[ItemStore] DB open error");
+//      idbReq.onsuccess = event => {
+//        console.log("[ItemStore] onsuccess");
+//        this._db = idbReq.result;
+//      }
+//    }
+//
+//    store(items) {
+////        this._items = this._items.concat(items);
+////        this._changeEvents.forEach(e => e(items));
+//
+//      let tx = this._db.transaction(DB_STORE_NAME, "readwrite");
+//      let store = tx.objectStore(DB_STORE_NAME);
+//  	  var req = store.add(items)
+//	  req.onsuccess = () => console.log("成功");
+//	  req.onerror = () => console.log("エラー");
+//	  tx.oncomplete = () => console.log("トランザクション完了");
+//	  tx.onerror = () => console.log("トランザクション失敗");
+//    }
+//
+//
+////     onChange(fn) {
+////         this._changeEvents.push(fn);
+////     }
+//
+//
+//    get items() {
+//      let tx = this._db.transaction(DB_STORE_NAME, "readwrite");
+//      let store = tx.objectStore(DB_STORE_NAME);
+//      store.openCursor().onsuccess = function (event) {
+//        var cursor = event.target.result;
+//        if (cursor) {
+//            console.log("id_str:" + cursor.key + " Text: " + cursor.value.Text);
+//            cursor.continue();
+//        }
+//      };
+//    }
+//}
+
+
+
+
 document.addEventListener("visibilitychange", function() {
     if (!document.hidden && source.readyState == EventSource.CLOSED) {
         console.log("reconnect");
