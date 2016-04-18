@@ -1,4 +1,9 @@
+const DB_NAME = "timeline";
+const DB_VERSION = 1;
+const DB_STORE_NAME = 'items';
+
 class ItemStore {
+
     constructor() {
         this._items = [];
         this._changeEvents = [];
@@ -10,32 +15,7 @@ class ItemStore {
         idbReq.onerror = event => console.log("DB open error");
         idbReq.onsuccess = event => {
             this.db = idbReq.result;
-
-//            //"twitter", "pocket"2つのオブジェクトストアを読み書き権限付きで使用することを宣言
-//            var transaction = db.transaction(["twitter", "pocket"], "readwrite");
-//
-//            //各オブジェクトストアの取り出し
-//            var twitterStore = transaction.objectStore("twitter");
-//            var pocketStore = transaction.objectStore("pocket");
-//
-//            //twitterオブジェクトストアから全データの取り出し
-//            twitterStore.openCursor().onsuccess = function (event) {
-//                var cursor = event.target.result;
-//                if (cursor) {
-//                    console.log("id_str:" + cursor.key + " Text: " + cursor.value.text);
-//                    cursor.continue();
-//                }
-//            };
-//            //pocketオブジェクトストアからの全データの取り出し
-//            pocketStore.openCursor().onsuccess = function (event) {
-//                var cursor = event.target.result;
-//                if (cursor) {
-//                    console.log("item_id:" + cursor.key + " url: " + cursor.value.url);
-//                    cursor.continue();
-//                }
-//            };
         }
-
     }
 
     store(items) {
@@ -55,9 +35,6 @@ class ItemStore {
 }
 
 
-//const DB_NAME = "timeline";
-//const DB_VERSION = 1;
-//const DB_STORE_NAME = 'items';
 //
 //class ItemStore {
 //
