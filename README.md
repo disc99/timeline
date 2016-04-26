@@ -2,6 +2,7 @@
 
 
 ### Use technology
+- Angular2:TODO
 - Spring Boot
 - Thymeleaf
 - Flyway
