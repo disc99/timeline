@@ -1,5 +1,5 @@
-# Timeline application
-
+# timeline
+Timeline application
 
 ### Use technology
 - Angular2:TODO
